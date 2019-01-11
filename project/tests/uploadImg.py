@@ -10,7 +10,7 @@ import time
 from flask import json
 
 start = time.time()
-'''
+
 # URL
 url = "http://localhost:5004/v1/images/upload"
 print "URL : " + url
@@ -38,7 +38,7 @@ payload = {}
 r = requests.get(url,headers={}).content
 
 print "Response: {}".format(r)
-'''
+
 url = "http://localhost:5004/v1/images"
 print "URL : " + url
 

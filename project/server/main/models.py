@@ -8,9 +8,35 @@ IMGUR_BASE = "https://api.imgur.com"
 
 
 class Task:
+    """
+    A class used to represent a job
+    ...
+
+    Attributes
+    ----------
+    queue : list
+        the list of all urls
+    pending : list
+        the name of all pending urls
+    complete : list
+        the name of all completed urls
+    failed : list
+        the name of all failed urls
+    url_map : dict
+        a dictionary that maps provided urls with imgur urls
+    created:
+        date created
+    finished:
+        date finished
+    status:
+        the job status
+    credentials:
+        the access token and other useful objects
+
+    """
     def __init__(self):
         """
-
+        Create the object
         :rtype: object
         """
         self.queue = list()
@@ -23,12 +49,14 @@ class Task:
         self.status = "pending"
         self.credentials = None
 
-    def initialize(self, param, cred):
+    def initialize(self, urls, cred):
         """
-
+        Initialize the object with parameters urls and cred
+        :param urls : list > the list of urls
+        :param cred : dict > the client credentials
         :rtype: object
         """
-        for i in param:
+        for i in urls:
             self.enqueue(i)
             self.pending.append(i)
         clean = str(cred).replace('b\"', '').replace('\"', '').replace("'", '"')
@@ -37,7 +65,7 @@ class Task:
     def export(self):
         """
 
-        :rtype: object
+        :rtype: dict
         """
         return {
             "created": self.created,
@@ -52,7 +80,7 @@ class Task:
 
     def executeAll(self, _set_task_progress):
         """
-
+        Sequentially upload images and update job progress
         :rtype: object
         """
         _set_task_progress(self)
@@ -74,7 +102,7 @@ class Task:
 
     def executeOne(self, val):
         """
-
+        Upload a unique image
         :rtype: object
         """
         v,url = self.upload_image(path=None, url=val, title=None, description=None, album=None)
@@ -85,10 +113,10 @@ class Task:
             self.url_map.update({val: url})
             return False
 
-    # Adding elements to queue
+
     def enqueue(self, data):
         """
-
+        Adding elements to queue
         :rtype: object
         """
         # Checking to avoid duplicate entry (not mandatory)
@@ -97,20 +125,20 @@ class Task:
             return True
         return False
 
-    # Removing the last element from the queue
+
     def dequeue(self):
         """
-
+        Adding elements to queue
         :rtype: object
         """
         if len(self.queue) > 0:
             return self.queue.pop()
         return ("Queue Empty!")
 
-    # Getting the size of the queue
+
     def size(self):
         """
-
+        Getting the size of the queue
         :rtype: object
         """
         return len(self.queue)
@@ -118,7 +146,7 @@ class Task:
     def upload_image(self, path=None, url=None, title=None, description=None,
                      album=None):
         """
-
+        Upload image to the imgur server and returns the new url
         :rtype: object
         """
         if bool(path) == bool(url):
@@ -132,8 +160,8 @@ class Task:
         payload = {'album_id': "58tq5Nw", 'image': image,
                    'title': title, 'description': description}
 
-        #token = ast.literal_eval(str(self.credentials))["access_token"]
-        token = self.credentials["access_token"]
+        token = ast.literal_eval(str(self.credentials))["access_token"]
+
         authentication = {'Authorization': 'Bearer {0}'.format(token)}
         verify = True
         resp = requests.post(IMGUR_BASE + "/3/image", payload, headers=authentication, verify=verify)

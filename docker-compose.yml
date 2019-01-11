@@ -27,5 +27,15 @@ services:
     depends_on:
       - redis
 
+  test:
+    image: web
+    command: python manage.py test
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - APP_SETTINGS=project.server.config.TestingConfig
+    depends_on:
+      - web
+
   redis:
     image: redis:4.0.11-alpine

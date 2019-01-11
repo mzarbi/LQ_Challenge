@@ -14,7 +14,7 @@ app = create_app()
 cli = FlaskGroup(create_app=create_app)
 
 
-@cli.command()
+@cli.command('test')
 def test():
     """Runs the unit tests without test coverage."""
     tests = unittest.TestLoader().discover('project/tests', pattern='test*.py')
